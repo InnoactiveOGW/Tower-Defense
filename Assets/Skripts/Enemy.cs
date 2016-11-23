@@ -6,7 +6,7 @@ public class Enemy : MonoBehaviour {
 	public int lives;
 	public int speed;
 
-	public Transform target;
+	Transform target;
 	NavMeshAgent agent;
 
 	// Use this for initialization

@@ -76,28 +76,8 @@ public class SpawnPoint : MonoBehaviour {
 	}
 
 	private void spawnNewEnemy(){
-		//Transform spawnPoint = GameObject.Find ("Path").transform.GetChild (0);
-		//Object prefab = Resources.Load("Assets/EnemyPrefab");
-		//Instantiate (enemy);
-		//Instantiate(prefab, spawnPoint.position, Quaternion.identity) ;
-		//Instantiate(Resources.Load("Enemy"));
-
-		//Enemy enemyPrefab = Instantiate<Enemy>();
-		//Enemy clone = (Enemy)Instantiate(enemyPrefab, spawnPoint.position, spawnPoint.rotation);
-		//TODO should be done with prefab
-
-		GameObject enemy = GameObject.CreatePrimitive (PrimitiveType.Cube);
-		Transform spawnPoint = GameObject.Find ("Path").transform.GetChild (0);
-		enemy.transform.position = spawnPoint.position;
-		Vector3 scale = transform.localScale;
-		scale.y = 0.1F;
-		scale.x = 0.1F;
-		scale.z = 0.1F;
-		enemy.transform.localScale = scale;
-		enemy.AddComponent<Enemy> ();
-		enemy.AddComponent<NavMeshAgent> ().speed = 1;
-		enemy.AddComponent<Rigidbody> ();
-
-		//enemy.AddComponent<Material> ();
+		Quaternion spawnPoint = GameObject.Find ("Path").transform.GetChild (0).rotation;
+		GameObject go = Instantiate(Resources.Load("Enemy")) as GameObject; 
+		go.transform.rotation = spawnPoint;
 	}
 }
