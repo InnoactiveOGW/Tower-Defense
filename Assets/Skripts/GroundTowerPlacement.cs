@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System;
 
-public class floorObjectPlacement : MonoBehaviour {
+public class GroundTowerPlacement : MonoBehaviour {
 
     public GameObject prefabPlacementObject;
     public GameObject prefabOK;
