@@ -76,8 +76,8 @@ public class SpawnPoint : MonoBehaviour {
 	}
 
 	private void spawnNewEnemy(){
-		Quaternion spawnPoint = GameObject.Find ("Path").transform.GetChild (0).rotation;
+		Vector3 spawnPoint = GameObject.Find ("Path").transform.GetChild (0).position;
 		GameObject go = Instantiate(Resources.Load("Enemy")) as GameObject; 
-		go.transform.rotation = spawnPoint;
+		go.transform.position = spawnPoint;
 	}
 }
