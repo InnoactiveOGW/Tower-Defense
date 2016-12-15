@@ -14,8 +14,8 @@ public class SpawnPoint : MonoBehaviour {
 	private static int wave_3 = 15;
 	private static int wave_4 = 25;
 
-	public int timeBetweenSpawn = 1; //in sec
-	public int timeBetweenWaves = 2; //in sec
+	public int timeBetweenSpawn = 10; //in sec
+	public int timeBetweenWaves = 20; //in sec
 
 	private float lastSpawn;
 	private float lastWave;

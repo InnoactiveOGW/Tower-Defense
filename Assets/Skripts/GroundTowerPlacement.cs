@@ -91,9 +91,11 @@ public class GroundTowerPlacement : MonoBehaviour {
                     
                     // ToDo: place the result somewhere..
 					GameObject placedTower = (GameObject)Instantiate(prefabPlacementObject, point, Quaternion.identity);
+					placedTower.AddComponent <Tower> ();
 					NavMeshObstacle navMeshObstacle = placedTower.AddComponent<NavMeshObstacle>() as NavMeshObstacle;
 					navMeshObstacle.carving = true;
 					CapsuleCollider capsuleCollider = placedTower.AddComponent<CapsuleCollider>() as CapsuleCollider;
+
 				}
             }
             else if (!Input.GetMouseButtonDown(0))
