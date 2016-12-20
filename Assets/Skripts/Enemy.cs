@@ -3,9 +3,12 @@ using System.Collections;
 
 public class Enemy : MonoBehaviour {
 
-	public int startingHealth = 100; /*Health der Feinde*/
-	public int currentHealth;
+	protected int currentHealth;
+	protected int speed = 1;
+	protected int attackDamage; /*Schaden der zugefügt wird bei Kollision mit Tor*/
+	protected int reward;
 
+<<<<<<< HEAD
 	public int lives;
 	public int speed;
 	public int attackDamage = 5; /*Schaden der zugefügt wird bei Kollision mit Tor*/
@@ -14,15 +17,23 @@ public class Enemy : MonoBehaviour {
 	Transform target;
 	NavMeshAgent agent;
 	Animator anim;
+=======
+	protected GateHealth gateHealth; /*Für Referenz auf public Methode im Script Gate Health*/
+	protected Transform target;
+	protected NavMeshAgent agent;
+>>>>>>> master
 
 	// Use this for initialization
 	void Start () {
-		lives = 3;
 		target = GameObject.Find ("Path").transform.GetChild (1);
 		agent = GetComponent<NavMeshAgent> ();
+		agent.speed = speed;
 		gateHealth = target.GetComponent <GateHealth>(); /*Zugriff aufs Script Gate Health*/
+<<<<<<< HEAD
 		currentHealth = startingHealth; /*Health setzen*/
 		anim = this.transform.GetComponent<Animator>();
+=======
+>>>>>>> master
 	}
 	
 	// Update is called once per frame
@@ -42,8 +53,8 @@ public class Enemy : MonoBehaviour {
 	}
 
 	public void damage(int damage){
-		lives -= damage;
-		if (lives <= 0) {
+		currentHealth -= damage;
+		if (currentHealth <= 0) {
 			die ();
 		}
 	}

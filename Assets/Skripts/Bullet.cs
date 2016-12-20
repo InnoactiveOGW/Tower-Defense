@@ -3,15 +3,14 @@ using System.Collections;
 
 public class Bullet : MonoBehaviour {
 
-	int damage;
-	int speed;
+	int damage = 1;
+	int speed = 15;
 
 	Transform target;
+	public float radius = 0;
 
 	// Use this for initialization
 	void Start () {
-		damage = 1;
-		speed = 2;
 
 	}
 
@@ -21,19 +20,18 @@ public class Bullet : MonoBehaviour {
 			Destroy (gameObject);
 			return;
 		}
+		Vector3 direction = target.position - this.transform.localPosition;
+		float distance = speed * Time.deltaTime;
 
-		Vector3 direction = target.position - this.transform.position;
-		transform.Translate( direction.normalized * Time.deltaTime * speed, Space.World );
-		Quaternion targetRotation = Quaternion.LookRotation( direction );
-		this.transform.rotation = Quaternion.Lerp(this.transform.rotation, targetRotation, Time.deltaTime*5);
-
-	}
-
-	void OnCollisionEnter (Collision col) {
-		if (col.gameObject.name == "Enemy(Clone)") {
-			GameObject enemy = col.gameObject;
-			doDamage (enemy);
+		if(direction.magnitude <= distance) {
+			DoBulletHit();
 		}
+		else {
+			transform.Translate( direction.normalized * distance, Space.World );
+			Quaternion targetRotation = Quaternion.LookRotation( direction );
+			this.transform.rotation = Quaternion.Lerp(this.transform.rotation, targetRotation, Time.deltaTime*5);
+		}
+
 	}
 
 	void doDamage(GameObject enemy){
@@ -45,5 +43,22 @@ public class Bullet : MonoBehaviour {
 
 	public void setTarget(Transform target){
 		this.target = target;
+	}
+
+	void DoBulletHit() {
+		if(radius == 0) {
+			target.GetComponent<Enemy>().damage(damage);
+		}
+		else {
+			Collider[] cols = Physics.OverlapSphere(transform.position, radius);
+
+			foreach(Collider c in cols) {
+				Enemy enemy = c.GetComponent<Enemy>();
+				if(enemy != null) {
+					enemy.GetComponent<Enemy>().damage(damage);
+				}
+			}
+		}
+		Destroy(gameObject);
 	}
 }
