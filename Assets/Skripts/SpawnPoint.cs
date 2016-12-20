@@ -77,7 +77,7 @@ public class SpawnPoint : MonoBehaviour {
 
 	private void spawnNewEnemy(){
 		Vector3 spawnPoint = GameObject.Find ("Path").transform.GetChild (0).position;
-		GameObject go = Instantiate(Resources.Load("Enemy")) as GameObject; 
+		GameObject go = Instantiate(Resources.Load("Zombie")) as GameObject; 
 		go.transform.position = spawnPoint;
 	}
 }

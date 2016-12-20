@@ -13,6 +13,7 @@ public class Enemy : MonoBehaviour {
 
 	Transform target;
 	NavMeshAgent agent;
+	Animator anim;
 
 	// Use this for initialization
 	void Start () {
@@ -21,6 +22,7 @@ public class Enemy : MonoBehaviour {
 		agent = GetComponent<NavMeshAgent> ();
 		gateHealth = target.GetComponent <GateHealth>(); /*Zugriff aufs Script Gate Health*/
 		currentHealth = startingHealth; /*Health setzen*/
+		anim = this.transform.GetComponent<Animator>();
 	}
 	
 	// Update is called once per frame
@@ -36,6 +38,7 @@ public class Enemy : MonoBehaviour {
 			}
 			die ();
 		}
+		anim.Play ("walk");
 	}
 
 	public void damage(int damage){
