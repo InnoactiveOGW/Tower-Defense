@@ -6,13 +6,13 @@ public class Ghost : Enemy {
 	int startingHealth = 10;
 	int ghostSpeed = 7;
 	int ghostDamage = 3;
-	int ghostReward = 1;
+	int ghostValue = 1;
 
 	void Start () {
 		currentHealth = startingHealth; /*Health setzen*/
 		speed = ghostSpeed;
 		attackDamage = ghostDamage;
-		reward = ghostReward;
+		enemyValue = ghostValue;
 
 		target = GameObject.Find ("Path").transform.GetChild (1);
 		agent = GetComponent<NavMeshAgent> ();
