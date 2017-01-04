@@ -3,8 +3,8 @@ using System.Collections;
 
 public class Skeleton : Enemy {
 
-	int startingHealth = 50;
-	int skeletonSpeed = 10;
+	int startingHealth = 5; //50
+	int skeletonSpeed = 1;	//10
 	int skeletonDamage = 5;
 	int skeletonValue = 1;
 

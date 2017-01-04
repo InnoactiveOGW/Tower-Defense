@@ -4,7 +4,7 @@ using System.Collections;
 public class Demon : Enemy {
 
 	int startingHealth = 200;
-	int demonSpeed = 5;
+	int demonSpeed = 1;//5
 	int demonDamage = 2;
 	int demonValue = 1;
 

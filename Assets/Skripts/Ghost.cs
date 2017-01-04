@@ -4,7 +4,7 @@ using System.Collections;
 public class Ghost : Enemy {
 
 	int startingHealth = 10;
-	int ghostSpeed = 7;
+	int ghostSpeed = 1; //7
 	int ghostDamage = 3;
 	int ghostValue = 1;
 
