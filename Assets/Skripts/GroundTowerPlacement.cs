@@ -54,7 +54,7 @@ public class GroundTowerPlacement : MonoBehaviour {
             // Calculate the quantized world coordinates on where to actually place the object
             point.x = (float)(x) * grid - halfSlots.x + transform.position.x + grid / 2.0f;
             point.z = (float)(z) * grid - halfSlots.z + transform.position.z + grid / 2.0f;
-			point.y = 0.5f;
+			point.y = 0.15f;
 
             // Create an object to show if this area is available for building
             // Re-instantiate only when the slot has changed or the object not instantiated at all
