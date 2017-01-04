@@ -115,7 +115,7 @@ public class SpawnPoint : MonoBehaviour {
 		GameObject returnObject = null;
 		switch (enemy) {
 		case enemy.ZOMBIE:
-			returnObject = Instantiate (Resources.Load ("Zombie")) as GameObject;
+			returnObject = Instantiate (Resources.Load ("Skeleton")) as GameObject;
 			break;
 		case enemy.DEMON:
 			returnObject = Instantiate (Resources.Load ("Demon")) as GameObject;
