@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Zombie : Enemy {
 
-	int startingHealth = 100;
+	int startingHealth = 5;
 	int zombieSpeed = 1;
 	int zombieDamage = 1;
 	int zombieValue = 1;

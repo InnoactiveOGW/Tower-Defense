@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Enemy : MonoBehaviour {
 
-	protected int currentHealth;
+	protected int currentHealth = 20;
 	protected int speed = 1;
 	protected int attackDamage; /*Schaden der zugefügt wird bei Kollision mit Tor*/
 	protected int enemyValue;

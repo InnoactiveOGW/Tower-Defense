@@ -3,27 +3,83 @@ using System.Collections;
 
 public class Tower : MonoBehaviour {
 
-	float fireCooldown;
-	float lastShoot;
-	float range;
+	float fireSpeed = 5;
+	float range = 5;
+	float damage = 5;
+	float damageRadius = 0;
+
+	float timeSinceLastShot = 0;
+
+	//Variablen für shoot()
+	//ParticleSystem gunParticles;
+	LineRenderer gunLine;
+	int shootableMask;
+	Light gunLight;
+	Ray shootRay; // A ray from the gun end forwards
+	RaycastHit shootHit; // A raycast hit to get information about what was hit
+
+	float effectsDisplayTime = 0.1f;
 
 	// Use this for initialization
 	void Start () {
-		fireCooldown = 2;
-		range = 10;
+		// Create a layer mask for the Shootable layer.
+		shootableMask = LayerMask.GetMask ("Shootable");
+
+		// Set up the references.
+		//gunParticles = GetComponent<ParticleSystem> ();
+		//gunLight = GetComponent<Light> ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if ((Time.time - lastShoot) >= fireCooldown) {
-			fire ();
-			lastShoot = Time.time;
+		if (timeSinceLastShot >= fireSpeed) {
+			shoot ();
+			timeSinceLastShot = 0;
+		} 
+		else {
+			timeSinceLastShot += Time.deltaTime;
 		}
-		
-				
+
+		if(timeSinceLastShot >= fireSpeed * effectsDisplayTime) {
+			DisableEffects ();
+		}
 	}
 
-	void fire(){
+	private void DisableEffects (){
+		//gunLight.enabled = false;
+		//gunLine.enabled = false;
+	}
+
+	private void shoot(){
+		//Laser Schuss
+		Transform target = getNextEnemy ();
+		if (target == null) {
+			return;
+		}
+
+		//gunLight.enabled = true;
+
+		//gunParticles.Stop ();
+		//gunParticles.Play ();
+
+		shootRay.origin = transform.position;
+		shootRay.direction = target.transform.position - transform.position;
+
+		if(Physics.Raycast (shootRay, out shootHit, range, shootableMask))
+		{
+			Enemy enemy = shootHit.collider.GetComponent <Enemy> ();
+			if(enemy != null)
+			{
+				enemy.damage ((int)damage);
+			}
+			GameObject laser = Instantiate(Resources.Load("Laser"), this.transform.position, this.transform.rotation) as GameObject;
+			if (laser.GetComponent<Laser> () != null) {
+				laser.GetComponent<Laser> ().setTarget (target.transform);
+			}
+		}
+
+		/*
+		//Kugel Schuss 
 		Transform target = getNextEnemy ();
 		if (target == null) {
 			return;
@@ -32,6 +88,7 @@ public class Tower : MonoBehaviour {
 		if (bullet.GetComponent<Bullet> () != null) {
 			bullet.GetComponent<Bullet> ().setTarget (target.transform);
 		}
+		*/
 	}
 
 	Transform getNextEnemy(){
@@ -55,5 +112,20 @@ public class Tower : MonoBehaviour {
 		}
 
 		return nearestEnemy.transform;
+	}
+
+	public void upgradeSpeed(){
+		fireSpeed = 2;
+		//TODO update Tower occurance
+	}
+
+	public void upgradeDamage(){
+		damage = 10;
+		//TODO update Tower occurance
+	}
+
+	public void upgradeArea(){
+		damageRadius = 3;
+		//TODO update Tower occurance
 	}
 }
