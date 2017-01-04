@@ -10,10 +10,14 @@ public class Laser : MonoBehaviour {
 	bool endReached = false;
 	bool startReached = false;
 
-	float speed = 40;
+	float speed = 15;
 	float distance = 0;
 
 	LineRenderer line;
+
+	Enemy enemy;
+	float damage;
+	float damageRadius;
 
 	// Use this for initialization
 	void Start () {
@@ -50,6 +54,11 @@ public class Laser : MonoBehaviour {
 			line.SetPosition(0, tmpPoint);
 			line.SetPosition (1, finalTarget);
 		} else {
+			if (damageRadius == 0) {
+				enemy.damage ((int)damage);
+			} else {
+				//TODO area effect
+			}
 			Destroy (gameObject);
 		}
 
@@ -58,5 +67,11 @@ public class Laser : MonoBehaviour {
 	public void setTarget(Transform target){
 		this.finalTarget = target.position;
 		distance = Vector3.Distance (startPoint, finalTarget);
+	}
+
+	public void setDamageValues(Enemy enemy, float damage, float damageRadius){
+		this.enemy = enemy;
+		this.damage = damage;
+		this.damageRadius = damageRadius;
 	}
 }

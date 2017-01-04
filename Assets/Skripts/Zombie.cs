@@ -7,9 +7,10 @@ public class Zombie : Enemy {
 	int zombieSpeed = 1;
 	int zombieDamage = 1;
 	int zombieValue = 1;
+
 	bool spawning = true;
 	bool isAlive  = true;
-
+	bool hit = true;
 
 	void Start () {
 		currentHealth = startingHealth; /*Health setzen*/

@@ -70,11 +70,11 @@ public class Tower : MonoBehaviour {
 			Enemy enemy = shootHit.collider.GetComponent <Enemy> ();
 			if(enemy != null)
 			{
-				enemy.damage ((int)damage);
-			}
-			GameObject laser = Instantiate(Resources.Load("Laser"), this.transform.position, this.transform.rotation) as GameObject;
-			if (laser.GetComponent<Laser> () != null) {
-				laser.GetComponent<Laser> ().setTarget (target.transform);
+				GameObject laser = Instantiate(Resources.Load("Laser"), this.transform.position, this.transform.rotation) as GameObject;
+				if (laser.GetComponent<Laser> () != null) {
+					laser.GetComponent<Laser> ().setTarget (target.transform);
+					laser.GetComponent<Laser> ().setDamageValues (enemy, damage, damageRadius);
+				}
 			}
 		}
 

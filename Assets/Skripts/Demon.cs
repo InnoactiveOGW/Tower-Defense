@@ -8,6 +8,10 @@ public class Demon : Enemy {
 	int demonDamage = 2;
 	int demonValue = 1;
 
+	bool spawning = true;
+	bool isAlive  = true;
+	bool hit = true;
+
 	void Start () {
 		currentHealth = startingHealth; /*Health setzen*/
 		speed = demonSpeed;

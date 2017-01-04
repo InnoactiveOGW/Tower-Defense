@@ -8,6 +8,10 @@ public class Skeleton : Enemy {
 	int skeletonDamage = 5;
 	int skeletonValue = 1;
 
+	bool spawning = true;
+	bool isAlive  = true;
+	bool hit = true;
+
 	void Start () {
 		currentHealth = startingHealth; /*Health setzen*/
 		speed = skeletonSpeed;

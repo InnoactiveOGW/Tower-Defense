@@ -8,6 +8,10 @@ public class Ghost : Enemy {
 	int ghostDamage = 3;
 	int ghostValue = 1;
 
+	bool spawning = true;
+	bool isAlive  = true;
+	bool hit = true;
+
 	void Start () {
 		currentHealth = startingHealth; /*Health setzen*/
 		speed = ghostSpeed;

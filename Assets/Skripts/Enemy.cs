@@ -31,7 +31,8 @@ public class Enemy : MonoBehaviour {
 				gateHealth.takeDamage (attackDamage); /*Falls Kollision und Tor noch Health übrig, Tor Schaden zufügen*/
 				//Death (); Sollte später hier gemacht werden
 			}
-			die ();
+			// die() darf hier nicht aufgerufen werden, da sonst Coins hochgezählt werden
+			Destroy (gameObject);
 		}
 	}
 
