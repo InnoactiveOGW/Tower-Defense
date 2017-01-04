@@ -12,7 +12,6 @@ public class Zombie : Enemy {
 
 
 	void Start () {
-		
 		currentHealth = startingHealth; /*Health setzen*/
 		speed = zombieSpeed;
 		attackDamage = zombieDamage;
@@ -24,7 +23,7 @@ public class Zombie : Enemy {
 		spawning = false;
 	}
 	void Update(){
-		
+		agent.SetDestination (target.position);
 	}
 
 	public void kill(){

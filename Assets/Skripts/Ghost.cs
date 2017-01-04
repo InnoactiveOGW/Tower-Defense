@@ -19,4 +19,7 @@ public class Ghost : Enemy {
 		agent.speed = speed;
 		gateHealth = target.GetComponent <GateHealth>(); /*Zugriff aufs Script Gate Health*/
 	}
+	void Update(){
+		agent.SetDestination (target.position);
+	}
 }
