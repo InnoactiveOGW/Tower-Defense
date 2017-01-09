@@ -4,9 +4,9 @@ using System.Collections;
 public class Tower : MonoBehaviour {
 
 	float fireSpeed = 5;
-	float range = 1;
+	float range = 3;
 	float damage = 5;
-	float damageRadius = 0;
+	float damageRadius = 2;
 
 	float timeSinceLastShot = 0;
 
@@ -62,19 +62,24 @@ public class Tower : MonoBehaviour {
 		//gunParticles.Stop ();
 		//gunParticles.Play ();
 
-		shootRay.origin = transform.position;
-		shootRay.direction = target.transform.position - transform.position;
+		Vector3 pos = this.transform.position;
+		pos.y = pos.y + 1.25f;
+		Vector3 crystalPosition = pos;//position of crystal
+		//shootRay.origin = transform.position;
+		shootRay.origin = crystalPosition;
+		//shootRay.direction = target.transform.position - transform.position;
+		shootRay.direction = target.transform.position - crystalPosition;
 
 		if(Physics.Raycast (shootRay, out shootHit, range, shootableMask))
 		{
 			Enemy enemy = shootHit.collider.GetComponent <Enemy> ();
 			if(enemy != null)
 			{
-				enemy.damage ((int)damage);
-			}
-			GameObject laser = Instantiate(Resources.Load("Laser"), this.transform.position, this.transform.rotation) as GameObject;
-			if (laser.GetComponent<Laser> () != null) {
-				laser.GetComponent<Laser> ().setTarget (target.transform);
+				GameObject laser = Instantiate(Resources.Load("Laser"), crystalPosition, this.transform.rotation) as GameObject;
+				if (laser.GetComponent<Laser> () != null) {
+					laser.GetComponent<Laser> ().setTarget (target.transform);
+					laser.GetComponent<Laser> ().setDamageValues (enemy, damage, damageRadius);
+				}
 			}
 		}
 
@@ -104,14 +109,16 @@ public class Tower : MonoBehaviour {
 				dist = d;
 			}
 		}
+		if (nearestEnemy != null) {
+			Vector3 dir = nearestEnemy.transform.position - this.transform.position;
 
-		Vector3 dir = nearestEnemy.transform.position - this.transform.position;
+			if (dir.magnitude > range) {
+				return null;
+			}
 
-		if (dir.magnitude > range) {
-			return null;
+			return nearestEnemy.transform;
 		}
-
-		return nearestEnemy.transform;
+		return null;
 	}
 
 	public void upgradeSpeed(){
@@ -125,7 +132,7 @@ public class Tower : MonoBehaviour {
 	}
 
 	public void upgradeArea(){
-		damageRadius = 3;
+		damageRadius = 2;
 		//TODO update Tower occurance
 	}
 }

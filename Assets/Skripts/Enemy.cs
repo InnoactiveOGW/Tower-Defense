@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Enemy : MonoBehaviour {
 
-	protected int currentHealth = 20;
+	public int currentHealth;
 	protected int speed = 1;
 	protected int attackDamage; /*Schaden der zugefügt wird bei Kollision mit Tor*/
 	protected int enemyValue;
@@ -11,6 +11,10 @@ public class Enemy : MonoBehaviour {
 	protected GateHealth gateHealth; /*Für Referenz auf public Methode im Script Gate Health*/
 	protected Transform target;
 	protected NavMeshAgent agent;
+
+	protected bool spawning = true;
+	protected bool isAlive  = true;
+	protected bool hit = true;
 
 	// Use this for initialization
 	void Start () {
@@ -22,6 +26,7 @@ public class Enemy : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+		agent.enabled = true;
 		agent.SetDestination (target.position);
 	}
 
@@ -31,13 +36,16 @@ public class Enemy : MonoBehaviour {
 				gateHealth.takeDamage (attackDamage); /*Falls Kollision und Tor noch Health übrig, Tor Schaden zufügen*/
 				//Death (); Sollte später hier gemacht werden
 			}
-			die ();
+			isAlive = false;
+			// die() darf hier nicht aufgerufen werden, da sonst Coins hochgezählt werden
+			Destroy (gameObject);
 		}
 	}
 
 	public void damage(int damage){
 		currentHealth -= damage;
 		if (currentHealth <= 0) {
+			isAlive = false;
 			die ();
 		}
 	}
@@ -47,5 +55,17 @@ public class Enemy : MonoBehaviour {
 		Coins coins = coinCounter.GetComponent <Coins>(); /*Zugriff aufs Script Coins*/
 		coins.gainCoin (enemyValue);
 		Destroy (gameObject);
+	}
+
+	protected GameObject getNextTower(){
+		Ray ray = new Ray (transform.position, target.position-transform.position);
+		RaycastHit raycastHit;
+		if(Physics.Raycast (ray, out raycastHit, 1/*, LayerMask.GetMask ("Tower")*/))
+		{
+			if (raycastHit.collider.GetComponent<Tower> () != null) {
+				return raycastHit.transform.gameObject;
+			}
+		}
+		return null;
 	}
 }

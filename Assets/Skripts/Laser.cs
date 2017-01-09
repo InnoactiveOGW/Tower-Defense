@@ -10,10 +10,15 @@ public class Laser : MonoBehaviour {
 	bool endReached = false;
 	bool startReached = false;
 
-	float speed = 40;
+	float speed = 20;
 	float distance = 0;
 
 	LineRenderer line;
+
+	Enemy enemy;
+	float damage;
+	float damageRadius;
+	bool damageDealt = false; //to avoid bugs
 
 	// Use this for initialization
 	void Start () {
@@ -25,6 +30,9 @@ public class Laser : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if (damageDealt) {
+			Destroy (gameObject);
+		}
 		if (distance == 0) {
 			return;
 		}
@@ -50,6 +58,32 @@ public class Laser : MonoBehaviour {
 			line.SetPosition(0, tmpPoint);
 			line.SetPosition (1, finalTarget);
 		} else {
+			if (damageRadius == 0) {
+				if (enemy != null) {
+					enemy.damage ((int)damage);
+				}
+				damageDealt = true;
+			} else {
+				GameObject explosion = Instantiate (Resources.Load ("Explosion"), finalTarget, this.transform.rotation) as GameObject;
+				if (explosion != null) {
+					animateExplosion (explosion);
+					/*
+					ParticleSystem particleSystem = explosion.GetComponent<ParticleSystem> ();
+					particleSystem.Stop ();
+					particleSystem.Play ();
+					Destroy (explosion);
+					*/
+				}
+				Collider[] cols = Physics.OverlapSphere (finalTarget, damageRadius);
+
+				foreach (Collider c in cols) {
+					Enemy enemy = c.GetComponent<Enemy> ();
+					if (enemy != null) {
+						enemy.GetComponent<Enemy> ().damage ((int)damage);
+					}
+				}
+				damageDealt = true;
+			}
 			Destroy (gameObject);
 		}
 
@@ -58,5 +92,18 @@ public class Laser : MonoBehaviour {
 	public void setTarget(Transform target){
 		this.finalTarget = target.position;
 		distance = Vector3.Distance (startPoint, finalTarget);
+	}
+
+	public void setDamageValues(Enemy enemy, float damage, float damageRadius){
+		this.enemy = enemy;
+		this.damage = damage;
+		this.damageRadius = damageRadius;
+	}
+
+	private IEnumerator animateExplosion(GameObject explosion){
+		ParticleSystem particleSystem = explosion.GetComponent<ParticleSystem> ();
+		particleSystem.Stop ();
+		particleSystem.Play ();
+		yield return new WaitForSecondsRealtime (1);
 	}
 }
