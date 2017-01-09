@@ -89,6 +89,7 @@ public class SpawnPoint : MonoBehaviour {
 	private void spawnNewEnemy(){
 		Vector3 spawnPoint = GameObject.Find ("Path").transform.GetChild (0).position;
 		GameObject go = calculateSpawnedEnemy(); 
+		go.GetComponent<NavMeshAgent> ().enabled = false;
 		go.transform.position = spawnPoint;
 	}
 
@@ -115,7 +116,7 @@ public class SpawnPoint : MonoBehaviour {
 		GameObject returnObject = null;
 		switch (enemy) {
 		case enemy.ZOMBIE:
-			returnObject = Instantiate (Resources.Load ("Skeleton")) as GameObject;
+			returnObject = Instantiate (Resources.Load ("Zombie")) as GameObject;
 			break;
 		case enemy.DEMON:
 			returnObject = Instantiate (Resources.Load ("Demon")) as GameObject;

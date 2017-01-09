@@ -12,6 +12,8 @@ public class GroundTowerPlacement : MonoBehaviour {
 
     public float grid = 2.0f;
 
+	public int towerCost = 5;
+
     // Store which spaces are in use
     int[,] usedSpace;
 
@@ -43,8 +45,11 @@ public class GroundTowerPlacement : MonoBehaviour {
         
         // Check for mouse ray collision with this object
         if (getTargetLocation(out point))
-        {
-            //I'm lazy and use the object size from the renderer..
+		{
+			GameObject coinCounter = GameObject.Find("CoinCounter");
+			Coins coins = coinCounter.GetComponent <Coins>();
+
+            //use the object size from the renderer
 			Vector3 halfSlots = ground.GetComponent<Renderer>().bounds.size / 2.0f;
 
             // Transform position is the center point of this object, x and z are grid slots from 0..slots-1
@@ -66,7 +71,7 @@ public class GroundTowerPlacement : MonoBehaviour {
                 {
                     Destroy(areaObject);
                 }
-                areaObject = (GameObject)Instantiate(usedSpace[x, z] == 0 ? prefabOK : prefabFail, point, Quaternion.identity);
+				areaObject = (GameObject)Instantiate((usedSpace[x, z] == 0 && coins.isPossibleToBuy(towerCost))? prefabOK : prefabFail, point, Quaternion.identity);
             }
 
             // Create or move the object
@@ -83,9 +88,10 @@ public class GroundTowerPlacement : MonoBehaviour {
             if (Input.GetMouseButtonDown(0) && mouseClick == false)
             {
                 mouseClick = true;
-                // Place the object
-                if (usedSpace[x, z] == 0)
+
+				if (usedSpace[x, z] == 0 && coins.isPossibleToBuy(towerCost))
                 {
+					coins.useCoinsToBuy (towerCost);
                     Debug.Log("Placement Position: " + x + ", " + z);
                     usedSpace[x, z] = 1;
                     
@@ -135,4 +141,17 @@ public class GroundTowerPlacement : MonoBehaviour {
         point = Vector3.zero;
         return false;
     }
+
+	public void updateUsedSpaceAt(Transform tower, int value){
+		if (value < 0 || value > 1) {
+			Debug.Log ("Invalid Value");
+			return;
+		}
+		Vector3 halfSlots = ground.GetComponent<Renderer>().bounds.size / 2.0f;
+
+		int x = (int)Math.Round(Math.Round(tower.position.x - transform.position.x + halfSlots.x - grid / 2.0f) / grid);
+		int z = (int)Math.Round(Math.Round(tower.position.z - transform.position.z + halfSlots.z - grid / 2.0f) / grid);
+
+		usedSpace[x,z] = value;
+	}
 }
