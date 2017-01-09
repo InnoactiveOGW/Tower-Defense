@@ -4,12 +4,12 @@ using UnityEngine.UI;
 
 public class Timer : MonoBehaviour {
 
-	public Text counterText;
+	public TextMesh counterText;
 	public float seconds, minutes;
 
 	// Use this for initialization
 	void Start () {
-		counterText = GetComponent<Text> () as Text;
+		counterText = GetComponent<TextMesh> () as TextMesh;
 	}
 
 	// Update is called once per frame
