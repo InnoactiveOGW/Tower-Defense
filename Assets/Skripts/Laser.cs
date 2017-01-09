@@ -10,7 +10,7 @@ public class Laser : MonoBehaviour {
 	bool endReached = false;
 	bool startReached = false;
 
-	float speed = 15;
+	float speed = 20;
 	float distance = 0;
 
 	LineRenderer line;
@@ -18,6 +18,7 @@ public class Laser : MonoBehaviour {
 	Enemy enemy;
 	float damage;
 	float damageRadius;
+	bool damageDealt = false; //to avoid bugs
 
 	// Use this for initialization
 	void Start () {
@@ -29,6 +30,9 @@ public class Laser : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if (damageDealt) {
+			Destroy (gameObject);
+		}
 		if (distance == 0) {
 			return;
 		}
@@ -55,9 +59,30 @@ public class Laser : MonoBehaviour {
 			line.SetPosition (1, finalTarget);
 		} else {
 			if (damageRadius == 0) {
-				enemy.damage ((int)damage);
+				if (enemy != null) {
+					enemy.damage ((int)damage);
+				}
+				damageDealt = true;
 			} else {
-				//TODO area effect
+				GameObject explosion = Instantiate (Resources.Load ("Explosion"), finalTarget, this.transform.rotation) as GameObject;
+				if (explosion != null) {
+					animateExplosion (explosion);
+					/*
+					ParticleSystem particleSystem = explosion.GetComponent<ParticleSystem> ();
+					particleSystem.Stop ();
+					particleSystem.Play ();
+					Destroy (explosion);
+					*/
+				}
+				Collider[] cols = Physics.OverlapSphere (finalTarget, damageRadius);
+
+				foreach (Collider c in cols) {
+					Enemy enemy = c.GetComponent<Enemy> ();
+					if (enemy != null) {
+						enemy.GetComponent<Enemy> ().damage ((int)damage);
+					}
+				}
+				damageDealt = true;
 			}
 			Destroy (gameObject);
 		}
@@ -73,5 +98,12 @@ public class Laser : MonoBehaviour {
 		this.enemy = enemy;
 		this.damage = damage;
 		this.damageRadius = damageRadius;
+	}
+
+	private IEnumerator animateExplosion(GameObject explosion){
+		ParticleSystem particleSystem = explosion.GetComponent<ParticleSystem> ();
+		particleSystem.Stop ();
+		particleSystem.Play ();
+		yield return new WaitForSecondsRealtime (1);
 	}
 }
