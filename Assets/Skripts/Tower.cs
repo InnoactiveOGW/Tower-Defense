@@ -6,7 +6,7 @@ public class Tower : MonoBehaviour {
 	float fireSpeed = 5;
 	float range = 3;
 	float damage = 5;
-	float damageRadius = 2;
+	float damageRadius = 0;
 
 	float timeSinceLastShot = 0;
 
