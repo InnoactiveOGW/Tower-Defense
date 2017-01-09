@@ -14,7 +14,7 @@ public class Enemy : MonoBehaviour {
 
 	protected bool spawning = true;
 	protected bool isAlive  = true;
-	protected bool hit = true;
+	protected bool hit = false;
 
 	// Use this for initialization
 	void Start () {
@@ -28,6 +28,7 @@ public class Enemy : MonoBehaviour {
 	void Update () {
 		agent.enabled = true;
 		agent.SetDestination (target.position);
+		this.spawning = false;
 	}
 
 	void OnCollisionEnter (Collision col) {
