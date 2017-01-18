@@ -4,12 +4,12 @@ using UnityEngine.UI;
 
 public class Coins : MonoBehaviour {
 
-	public Text coinText;
+	public TextMesh coinText;
 	int coinCount = 20;
 
 	// Use this for initialization
 	void Start () {
-		coinText = GetComponent<Text> () as Text;
+		coinText = GetComponent<TextMesh> () as TextMesh;
 	}
 
 	// Update is called once per frame
