@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class Coins : MonoBehaviour {
 
 	public TextMesh coinText;
-	int coinCount = 20;
+	public int coinCount = 20;
 
 	// Use this for initialization
 	void Start () {

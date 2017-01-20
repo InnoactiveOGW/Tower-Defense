@@ -41,6 +41,7 @@ public class LaserTowerPlacement : MonoBehaviour {
 	void Start () {
 		groundMask = LayerMask.GetMask ("Ground");
 		towerMask = LayerMask.GetMask ("Tower");
+
 		pauseMask = LayerMask.GetMask ("Pause");
 		line = GetComponent <LineRenderer> ();
 		line.material = new Material (Shader.Find ("Particles/Additive"));

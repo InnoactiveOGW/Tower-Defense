@@ -67,12 +67,6 @@ public class Laser : MonoBehaviour {
 				GameObject explosion = Instantiate (Resources.Load ("Explosion"), finalTarget, this.transform.rotation) as GameObject;
 				if (explosion != null) {
 					animateExplosion (explosion);
-					/*
-					ParticleSystem particleSystem = explosion.GetComponent<ParticleSystem> ();
-					particleSystem.Stop ();
-					particleSystem.Play ();
-					Destroy (explosion);
-					*/
 				}
 				Collider[] cols = Physics.OverlapSphere (finalTarget, damageRadius);
 

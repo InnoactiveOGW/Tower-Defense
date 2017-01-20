@@ -25,6 +25,10 @@ public class Tower : MonoBehaviour {
 		// Create a layer mask for the Shootable layer.
 		shootableMask = LayerMask.GetMask ("Shootable");
 
+
+		//Tower muss das GameObject sein, welches die Eigenschaft Material besitzt
+		gameObject.material.mainTexture = Resources.Load("Ressources/Tower/Textures/texture_green.png", Texture3D);
+	
 		// Set up the references.
 		//gunParticles = GetComponent<ParticleSystem> ();
 		//gunLight = GetComponent<Light> ();
@@ -32,6 +36,8 @@ public class Tower : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+
 		if (timeSinceLastShot >= fireSpeed) {
 			shoot ();
 			timeSinceLastShot = 0;
