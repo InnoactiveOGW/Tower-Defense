@@ -19,6 +19,7 @@ public class Laser : MonoBehaviour {
 	float damage;
 	float damageRadius;
 	bool damageDealt = false; //to avoid bugs
+	Color color;
 
 	// Use this for initialization
 	void Start () {
@@ -45,8 +46,10 @@ public class Laser : MonoBehaviour {
 				tmpPoint = startPoint;
 			}
 			//Zeichne Linie
+
 			line.SetPosition(0, startPoint);
 			line.SetPosition (1, tmpPoint);
+
 		} else if (!startReached) {
 			//der if block funktioniert nicht wie ich mir das vorstelle
 			Vector3 direction = finalTarget - startPoint;
@@ -57,6 +60,7 @@ public class Laser : MonoBehaviour {
 			//Zeichne Linie
 			line.SetPosition(0, tmpPoint);
 			line.SetPosition (1, finalTarget);
+
 		} else {
 			if (damageRadius == 0) {
 				if (enemy != null) {
@@ -94,10 +98,12 @@ public class Laser : MonoBehaviour {
 		distance = Vector3.Distance (startPoint, finalTarget);
 	}
 
-	public void setDamageValues(Enemy enemy, float damage, float damageRadius){
+	public void setDamageValues(Enemy enemy, float damage, float damageRadius, Color color){
 		this.enemy = enemy;
 		this.damage = damage;
 		this.damageRadius = damageRadius;
+		this.color = color;
+		gameObject.GetComponent<Renderer>().material.color = color;
 	}
 
 	private IEnumerator animateExplosion(GameObject explosion){

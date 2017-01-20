@@ -10,6 +10,7 @@ public class Timer : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		counterText = GetComponent<TextMesh> () as TextMesh;
+
 	}
 
 	// Update is called once per frame
@@ -17,5 +18,9 @@ public class Timer : MonoBehaviour {
 		minutes = (int)(Time.time / 60f);
 		seconds = (int)(Time.time % 60f);
 		counterText.text = minutes.ToString("00") + ":" + seconds.ToString("00");
+	}
+
+	public string getTimeScore(){
+		return counterText.text;
 	}
 }

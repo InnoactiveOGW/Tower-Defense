@@ -17,7 +17,8 @@ public class Skeleton : Enemy {
 		target = GameObject.Find ("Path").transform.GetChild (1);
 		agent = GetComponent<NavMeshAgent> ();
 		agent.speed = speed;
-		gateHealth = target.GetComponent <GateHealth>(); /*Zugriff aufs Script Gate Health*/
+		GameObject healthBar = GameObject.Find ("HealthBar");
+		houseHealth = healthBar.GetComponent <HouseHealth>(); /*Zugriff aufs Script Gate Health*/
 	}
 
 	void Update(){
