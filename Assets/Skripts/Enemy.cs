@@ -3,12 +3,12 @@ using System.Collections;
 
 public class Enemy : MonoBehaviour {
 
-	public int currentHealth;
+	protected int currentHealth;
 	protected int speed = 1;
 	protected int attackDamage; /*Schaden der zugefügt wird bei Kollision mit Tor*/
 	protected int enemyValue;
 
-	protected GateHealth gateHealth; /*Für Referenz auf public Methode im Script Gate Health*/
+	protected HouseHealth houseHealth; /*Für Referenz auf public Methode im Script HouseHealth*/
 	protected Transform target;
 	protected NavMeshAgent agent;
 
@@ -21,7 +21,9 @@ public class Enemy : MonoBehaviour {
 		target = GameObject.Find ("Path").transform.GetChild (1);
 		agent = GetComponent<NavMeshAgent> ();
 		agent.speed = speed;
-		gateHealth = target.GetComponent <GateHealth>(); /*Zugriff aufs Script Gate Health*/
+
+		GameObject healthBar = GameObject.Find ("HealthBar");
+		houseHealth = healthBar.GetComponent <HouseHealth>(); /*Zugriff aufs Script Gate Health*/
 	}
 
 	// Update is called once per frame
@@ -33,10 +35,8 @@ public class Enemy : MonoBehaviour {
 
 	void OnCollisionEnter (Collision col) {
 		if (col.gameObject.name == "End") {
-			if (gateHealth.currentHealth > 0) {
-				gateHealth.takeDamage (attackDamage); /*Falls Kollision und Tor noch Health übrig, Tor Schaden zufügen*/
+			houseHealth.takeDamage (attackDamage); /*Falls Kollision und Tor noch Health übrig, Tor Schaden zufügen*/
 				//Death (); Sollte später hier gemacht werden
-			}
 			isAlive = false;
 			// die() darf hier nicht aufgerufen werden, da sonst Coins hochgezählt werden
 			Destroy (gameObject);
@@ -51,8 +51,8 @@ public class Enemy : MonoBehaviour {
 		}
 	}
 
-	private void die(){
-		GameObject coinCounter = GameObject.Find("CoinCounter");
+	protected void die(){
+		GameObject coinCounter = GameObject.Find("CoinText");
 		Coins coins = coinCounter.GetComponent <Coins>(); /*Zugriff aufs Script Coins*/
 		coins.gainCoin (enemyValue);
 		Destroy (gameObject);

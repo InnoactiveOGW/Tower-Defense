@@ -7,6 +7,7 @@ public class Tower : MonoBehaviour {
 	float range = 3;
 	float damage = 5;
 	float damageRadius = 0;
+	bool towerIsUpgraded;
 
 	float timeSinceLastShot = 0;
 
@@ -17,6 +18,7 @@ public class Tower : MonoBehaviour {
 	Light gunLight;
 	Ray shootRay; // A ray from the gun end forwards
 	RaycastHit shootHit; // A raycast hit to get information about what was hit
+	Color color;
 
 	float effectsDisplayTime = 0.1f;
 
@@ -24,6 +26,8 @@ public class Tower : MonoBehaviour {
 	void Start () {
 		// Create a layer mask for the Shootable layer.
 		shootableMask = LayerMask.GetMask ("Shootable");
+		towerIsUpgraded = false;
+		color = Color.yellow;
 
 		// Set up the references.
 		//gunParticles = GetComponent<ParticleSystem> ();
@@ -78,7 +82,7 @@ public class Tower : MonoBehaviour {
 				GameObject laser = Instantiate(Resources.Load("Laser"), crystalPosition, this.transform.rotation) as GameObject;
 				if (laser.GetComponent<Laser> () != null) {
 					laser.GetComponent<Laser> ().setTarget (target.transform);
-					laser.GetComponent<Laser> ().setDamageValues (enemy, damage, damageRadius);
+					laser.GetComponent<Laser> ().setDamageValues (enemy, damage, damageRadius, color);
 				}
 			}
 		}
@@ -123,16 +127,29 @@ public class Tower : MonoBehaviour {
 
 	public void upgradeSpeed(){
 		fireSpeed = 2;
-		//TODO update Tower occurance
+		gameObject.transform.GetChild(2).GetComponent<Renderer> ().material.color = Color.blue;
+		gameObject.transform.GetChild(0).GetComponent<Renderer> ().material.color = Color.blue;
+		towerIsUpgraded = true;
+		color = Color.blue;
 	}
 
 	public void upgradeDamage(){
 		damage = 10;
-		//TODO update Tower occurance
+		gameObject.transform.GetChild(2).GetComponent<Renderer> ().material.color = Color.red;
+		gameObject.transform.GetChild(0).GetComponent<Renderer> ().material.color = Color.red;
+		towerIsUpgraded = true;
+		color = Color.red;
 	}
 
-	public void upgradeArea(){
+	public void upgradeSplash(){
 		damageRadius = 2;
-		//TODO update Tower occurance
+		gameObject.transform.GetChild(2).GetComponent<Renderer> ().material.color = Color.green;
+		gameObject.transform.GetChild(0).GetComponent<Renderer> ().material.color = Color.green;
+		towerIsUpgraded = true;
+		color = Color.green;
+	}
+
+	public bool towerUpgraded(){
+		return towerIsUpgraded;
 	}
 }
