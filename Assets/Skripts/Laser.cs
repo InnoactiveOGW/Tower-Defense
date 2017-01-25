@@ -67,6 +67,7 @@ public class Laser : MonoBehaviour {
 					enemy.damage ((int)damage);
 				}
 				damageDealt = true;
+
 			} else {
 				GameObject explosion = Instantiate (Resources.Load ("Explosion"), finalTarget, this.transform.rotation) as GameObject;
 				if (explosion != null) {

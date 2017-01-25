@@ -3,9 +3,9 @@ using System.Collections;
 
 public class Tower : MonoBehaviour {
 
-	float fireSpeed = 5;
+	float fireSpeed = 3;
 	float range = 3;
-	float damage = 5;
+	float damage = 10;
 	float damageRadius = 0;
 	bool towerIsUpgraded;
 
@@ -19,6 +19,7 @@ public class Tower : MonoBehaviour {
 	Ray shootRay; // A ray from the gun end forwards
 	RaycastHit shootHit; // A raycast hit to get information about what was hit
 	Color color;
+	AudioSource levelUpSound;
 
 	float effectsDisplayTime = 0.1f;
 
@@ -28,6 +29,7 @@ public class Tower : MonoBehaviour {
 		shootableMask = LayerMask.GetMask ("Shootable");
 		towerIsUpgraded = false;
 		color = Color.yellow;
+		levelUpSound = GetComponent<AudioSource> ();
 
 		// Set up the references.
 		//gunParticles = GetComponent<ParticleSystem> ();
@@ -125,28 +127,38 @@ public class Tower : MonoBehaviour {
 		return null;
 	}
 
-	public void upgradeSpeed(){
-		fireSpeed = 2;
+	public void upgradeSpeed(int upgradeCost){
+		levelUpSound.Play ();
+		fireSpeed = 1;
 		gameObject.transform.GetChild(2).GetComponent<Renderer> ().material.color = Color.blue;
 		gameObject.transform.GetChild(0).GetComponent<Renderer> ().material.color = Color.blue;
 		towerIsUpgraded = true;
 		color = Color.blue;
+		Coins coins = GameObject.Find ("CoinText").GetComponent<Coins> ();
+		coins.useCoinsToBuy (upgradeCost);
 	}
 
-	public void upgradeDamage(){
-		damage = 10;
+	public void upgradeDamage(int upgradeCost){
+		levelUpSound.Play ();
+		damage = 30;
 		gameObject.transform.GetChild(2).GetComponent<Renderer> ().material.color = Color.red;
 		gameObject.transform.GetChild(0).GetComponent<Renderer> ().material.color = Color.red;
 		towerIsUpgraded = true;
 		color = Color.red;
+		Coins coins = GameObject.Find ("CoinText").GetComponent<Coins> ();
+		coins.useCoinsToBuy (upgradeCost);
 	}
 
-	public void upgradeSplash(){
-		damageRadius = 2;
+	//ist range Upgrade
+	public void upgradeSplash(int upgradeCost){
+		levelUpSound.Play ();
+		range = 5;
 		gameObject.transform.GetChild(2).GetComponent<Renderer> ().material.color = Color.green;
 		gameObject.transform.GetChild(0).GetComponent<Renderer> ().material.color = Color.green;
 		towerIsUpgraded = true;
 		color = Color.green;
+		Coins coins = GameObject.Find ("CoinText").GetComponent<Coins> ();
+		coins.useCoinsToBuy (upgradeCost);
 	}
 
 	public bool towerUpgraded(){

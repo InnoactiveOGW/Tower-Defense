@@ -3,10 +3,10 @@ using System.Collections;
 
 public class Demon : Enemy {
 
-	int startingHealth = 200;
-	int demonSpeed = 1;//5
+	int startingHealth = 70;
+	int demonSpeed = 1;
 	int demonDamage = 4;
-	int demonValue = 2;
+	int demonValue = 4;
 
 
 	void Start () {
@@ -32,9 +32,19 @@ public class Demon : Enemy {
 		if(path.status == NavMeshPathStatus.PathPartial){
 			GameObject nextTower = getNextTower ();
 			if (nextTower != null) {
-				GroundTowerPlacement gtp = GameObject.Find ("_Skripts_").transform.GetComponent<GroundTowerPlacement> ();
-				gtp.updateUsedSpaceAt (nextTower.transform, 0);
-				Destroy (nextTower);
+				LaserTowerPlacement ltp = null;
+				if (GameObject.Find ("Controller (left)") == null) {
+					ltp = GameObject.Find ("Controller (right)").transform.GetComponent<LaserTowerPlacement> ();
+				} else{
+					ltp = GameObject.Find ("Controller (left)").transform.GetComponent<LaserTowerPlacement> ();
+				}
+				if (ltp != null) {
+					ltp.updateUsedSpaceAt (nextTower.transform, 0);
+					GameObject explosion = Instantiate (Resources.Load ("TowerExplosion")) as GameObject;
+					explosion.transform.position = nextTower.transform.position;
+					explosion.SetActive (true);
+					Destroy (nextTower);
+				}
 			}
 		}
 	}

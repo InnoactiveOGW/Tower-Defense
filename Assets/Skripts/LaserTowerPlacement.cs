@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using UnityEngine.SceneManagement;
 
 public class LaserTowerPlacement : MonoBehaviour {
 
@@ -8,7 +9,6 @@ public class LaserTowerPlacement : MonoBehaviour {
 	int towerMask;
 	int pauseMask;
 	int playMask;
-	int restartMask;
 	int endGameMask;
 	int startGameMask;
 	int upgradeMask;
@@ -20,7 +20,8 @@ public class LaserTowerPlacement : MonoBehaviour {
 	Color failedLine;
 	SteamVR_TrackedController controller;
 
-	public int towerCost = 5;
+	int towerCost = 10;
+	int upgradeCost = 25;
 
 	/*Ab jetzt aus GroundTowerPlacement*/
 	public GameObject prefabPlacementObject;
@@ -44,16 +45,15 @@ public class LaserTowerPlacement : MonoBehaviour {
 	bool pauseButton;
 	bool gameIsPaused;
 	bool playButton;
-	bool restartButton;
 	bool endGameButton;
 	bool startGameButton;
 	bool towerSelected;
 	bool towerMenuOpen;
+	bool finalExplosion;
 	int upgradeButtons; //0 für default, 1 für damage, 2 für speed, 3 für splash
 
 	GameObject pauseObject;
 	GameObject playObject;
-	GameObject restartObject;
 	GameObject endGameObject;
 	GameObject startGameObject;
 	GameObject gameOverScreen;
@@ -61,14 +61,16 @@ public class LaserTowerPlacement : MonoBehaviour {
 	GameObject selectedTower;
 
 	Coins coinSystem;
+	AudioSource towerBuildSound;
 
 	// Use this for initialization
 	void Start () {
+
+		towerBuildSound = GetComponent<AudioSource> ();
 		groundMask = LayerMask.GetMask ("Ground");
 		towerMask = LayerMask.GetMask ("Tower");
 		pauseMask = LayerMask.GetMask ("Pause");
 		playMask = LayerMask.GetMask ("Play");
-		restartMask = LayerMask.GetMask ("Restart");
 		endGameMask = LayerMask.GetMask ("EndGame");
 		startGameMask = LayerMask.GetMask ("StartGame");
 		upgradeMask = LayerMask.GetMask ("Upgrade");
@@ -105,20 +107,11 @@ public class LaserTowerPlacement : MonoBehaviour {
 		}
 
 		pauseObject = GameObject.Find ("PauseButton");
-		Debug.Log (pauseObject);
-		pauseObject.SetActive (false);
 		playObject = GameObject.Find ("PlayButton");
-		playObject.SetActive (false);
-		restartObject = GameObject.Find ("RestartButton");
-		restartObject.SetActive (false);
 		endGameObject = GameObject.Find ("EndGameButton");
-		endGameObject.SetActive (false);
 		startGameObject = GameObject.Find ("StartGameButton");
-		startGameObject.SetActive (false);
 		gameOverScreen = GameObject.Find ("GameOverScreen");
-		gameOverScreen.SetActive (false);
 		startGameScreen = GameObject.Find ("StartGameScreen");
-		startGameScreen.SetActive (false);
 
 		coinSystem = GameObject.Find ("CoinText").GetComponent<Coins>();
 
@@ -127,12 +120,18 @@ public class LaserTowerPlacement : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+		if (GameObject.Find ("Home").transform.GetChild (0).GetComponent<HouseHealth> ().getGameOver ()) {
+			gameOver ();
+		}
+
+
 		RaycastHit raycastHit;
 		Ray ray = new Ray(transform.position, transform.forward);
 
 		if (towerMenuOpen) {
 			if (Physics.Raycast (ray, out raycastHit, Mathf.Infinity, upgradeMask)) {
-				if (coinSystem.isPossibleToBuy (towerCost)) {
+				if (coinSystem.isPossibleToBuy (upgradeCost)) {
 					line.SetColors (groundLine, groundLine);
 				} else {
 					line.SetColors (failedLine, failedLine);
@@ -186,7 +185,6 @@ public class LaserTowerPlacement : MonoBehaviour {
 				playButton = false;
 				endGameButton = false;
 				startGameButton = false;
-				restartButton = false;
 				towerSelected = false;
 			} else if (Physics.Raycast (ray, out raycastHit, Mathf.Infinity, playMask)) {
 				line.SetColors (groundLine, groundLine);
@@ -195,16 +193,6 @@ public class LaserTowerPlacement : MonoBehaviour {
 				playButton = true;
 				endGameButton = false;
 				startGameButton = false;
-				restartButton = false;
-				towerSelected = false;
-			} else if (Physics.Raycast (ray, out raycastHit, Mathf.Infinity, restartMask)) {
-				line.SetColors (groundLine, groundLine);
-				insideField = false;
-				pauseButton = false;
-				playButton = false;
-				endGameButton = false;
-				startGameButton = false;
-				restartButton = true;
 				towerSelected = false;
 			} else if (Physics.Raycast (ray, out raycastHit, Mathf.Infinity, endGameMask)) {
 				line.SetColors (groundLine, groundLine);
@@ -213,7 +201,6 @@ public class LaserTowerPlacement : MonoBehaviour {
 				playButton = false;
 				endGameButton = true;
 				startGameButton = false;
-				restartButton = false;
 				towerSelected = false;
 			} else if (Physics.Raycast (ray, out raycastHit, Mathf.Infinity, startGameMask)) {
 				line.SetColors (groundLine, groundLine);
@@ -222,7 +209,6 @@ public class LaserTowerPlacement : MonoBehaviour {
 				playButton = false;
 				endGameButton = false;
 				startGameButton = true;
-				restartButton = false;
 				towerSelected = false;
 			} else {
 				line.SetColors (outsideLine, outsideLine);
@@ -241,23 +227,25 @@ public class LaserTowerPlacement : MonoBehaviour {
 
 		if (towerMenuOpen) {
 			if (padWasClicked) {
-				switch (upgradeButtons) {
-				case 0:
-					break;
-				case 1:
+				if (coinSystem.isPossibleToBuy (upgradeCost)) {
+					switch (upgradeButtons) {
+					case 0:
+						break;
+					case 1:
 					//damage
-					selectedTower.GetComponent<Tower>().upgradeDamage();
-					break;
-				case 2:
+						selectedTower.GetComponent<Tower> ().upgradeDamage (upgradeCost);
+						break;
+					case 2:
 					//speed upgraden
-					selectedTower.GetComponent<Tower>().upgradeSpeed();
-					break;
-				case 3:
+						selectedTower.GetComponent<Tower> ().upgradeSpeed (upgradeCost);
+						break;
+					case 3:
 					//splash einbinden
-					selectedTower.GetComponent<Tower>().upgradeSplash();
-					break;
+						selectedTower.GetComponent<Tower> ().upgradeSplash (upgradeCost);
+						break;
+					}
+					closeTowerMenu ();
 				}
-				closeTowerMenu ();
 			}
 		} else {
 
@@ -310,6 +298,7 @@ public class LaserTowerPlacement : MonoBehaviour {
 						usedSpace [x, z] = 1;
 
 						// ToDo: place the result somewhere..
+						towerBuildSound.Play();
 						GameObject placedTower = (GameObject)Instantiate (prefabPlacementObject, towerPoint, Quaternion.identity);
 						placedTower.AddComponent <Tower> ();
 						NavMeshObstacle navMeshObstacle = placedTower.AddComponent<NavMeshObstacle> () as NavMeshObstacle;
@@ -329,9 +318,6 @@ public class LaserTowerPlacement : MonoBehaviour {
 			} else if (padWasClicked && playButton) {
 				startGameIsClicked ();
 				gameIsPaused = false;
-				padWasClicked = false;
-			} else if (padWasClicked && restartButton) {
-				restartGameIsClicked ();
 				padWasClicked = false;
 			} else if (padWasClicked && endGameButton) {
 				endGameIsClicked ();
@@ -365,7 +351,7 @@ public class LaserTowerPlacement : MonoBehaviour {
 	void PadCLicked(object sender, ClickedEventArgs e){
 		if (line.enabled && insideField)
 			padWasClicked = true;
-		else if (line.enabled && (pauseButton || playButton || restartButton || startGameButton || endGameButton))
+		else if (line.enabled && (pauseButton || playButton || startGameButton || endGameButton))
 			padWasClicked = true;
 		else if (towerMenuOpen)
 			padWasClicked = true;
@@ -389,16 +375,21 @@ public class LaserTowerPlacement : MonoBehaviour {
 		startGameScreen.SetActive (true);
 		startGameObject.SetActive (true);
 	}
+		
 
 	void startGameIsClicked(){
 		pauseObject.SetActive (true);
+		pauseObject.transform.position = new Vector3(-10.0f, 5.0f, -5.0f);
 		Time.timeScale = 1;
-		startGameScreen.SetActive (false);
-		startGameObject.SetActive (false);
+		playObject.transform.position = new Vector3(-10.0f, 5.0f, -5.0f);
 		playObject.SetActive (false);
+		endGameObject.transform.position = new Vector3(-10.0f, 2.0f, -5.0f);
 		endGameObject.SetActive (false);
+		gameOverScreen.transform.position = new Vector3(-10.0f, 6.0f, -5.0f);
+		gameOverScreen.SetActive (false);
+		startGameObject.SetActive (false);
+		startGameScreen.SetActive (false);
 		gameIsPaused = false;
-
 	}
 
 	void pauseGameIsClicked(){
@@ -412,18 +403,14 @@ public class LaserTowerPlacement : MonoBehaviour {
 		gameOver ();
 	}
 
-	void restartGameIsClicked(){
-		Application.LoadLevel(0);
-	}
-
 	public void gameOver(){
 		//spiel vorbei von househealth
-		/*String endScore = GameObject.Find("TimeText").GetComponent<Timer>().getTimeScore();
-		endScore = "Your time:      " + endScore;
-		TextMesh temp = GameObject.Find ("GameOverScreen").transform.GetChild (1).GetComponent<TextMesh> () as TextMesh;
-		temp.text = endScore;*/
 		gameOverScreen.SetActive (true);
-		restartObject.SetActive (true);
+		String endScore = GameObject.Find("TimeText").GetComponent<Timer>().getTimeScore();
+		endScore = "Game Over! \n Your time: " + endScore;
+		GameObject temp = GameObject.Find ("GameOverText");
+		TextMesh tempMesh = temp.GetComponent<TextMesh> ();
+		tempMesh.text = endScore;
 		Time.timeScale = 0;
 		playObject.SetActive (false);
 		endGameObject.SetActive (false);
@@ -441,4 +428,5 @@ public class LaserTowerPlacement : MonoBehaviour {
 		padWasClicked = false;
 		Destroy (upgradeMenu);
 	}
+		
 }

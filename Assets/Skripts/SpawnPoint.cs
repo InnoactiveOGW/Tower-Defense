@@ -8,7 +8,7 @@ public class SpawnPoint : MonoBehaviour {
 	private float amountOfEnemies = 0; 
 
 	private float timeBetweenSpawn = 2f; //in sec
-	private float timeBetweenWaves = 15f; //in sec
+	private float timeBetweenWaves = 20f; //in sec
 
 	private float timeSinceLastWave = 0;
 	private float timeSinceLastSpawn = 0;
@@ -22,7 +22,7 @@ public class SpawnPoint : MonoBehaviour {
 	private enemy[] enemyArray;
 	private enemy[] currentWaveArray;
 	private bool waveShuffled = false;
-	private bool waveActive = true;
+	private bool waveActive = false;
 
 	// Use this for initialization
 	void Start () {
@@ -80,6 +80,8 @@ public class SpawnPoint : MonoBehaviour {
 				enemiesSpawnedPerWave = 0;
 				waveActive = true;
 				timeSinceLastWave = 0;
+				AudioSource newWave = GetComponent <AudioSource> ();
+				newWave.Play ();
 			} else {
 				timeSinceLastWave += Time.deltaTime;
 			}
