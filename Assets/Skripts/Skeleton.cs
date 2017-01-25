@@ -3,10 +3,10 @@ using System.Collections;
 
 public class Skeleton : Enemy {
 
-	int startingHealth = 50;
-	int skeletonSpeed = 1;	//10
-	int skeletonDamage = 5;
-	int skeletonValue = 1;
+	int startingHealth = 200;
+	int skeletonSpeed = 1;
+	int skeletonDamage = 15;
+	int skeletonValue = 15;
 
 	void Start () {
 		currentHealth = startingHealth; /*Health setzen*/
@@ -31,9 +31,19 @@ public class Skeleton : Enemy {
 		if(path.status == NavMeshPathStatus.PathPartial){
 			GameObject nextTower = getNextTower ();
 			if (nextTower != null) {
-				GroundTowerPlacement gtp = GameObject.Find ("_Skripts_").transform.GetComponent<GroundTowerPlacement> ();
-				gtp.updateUsedSpaceAt (nextTower.transform, 0);
-				Destroy (nextTower);
+				LaserTowerPlacement ltp = null;
+				if (GameObject.Find ("Controller (left)") == null) {
+					ltp = GameObject.Find ("Controller (right)").transform.GetComponent<LaserTowerPlacement> ();
+				} else{
+					ltp = GameObject.Find ("Controller (left)").transform.GetComponent<LaserTowerPlacement> ();
+				}
+				if (ltp != null) {
+					ltp.updateUsedSpaceAt (nextTower.transform, 0);
+					GameObject explosion = Instantiate (Resources.Load ("TowerExplosion")) as GameObject;
+					explosion.transform.position = nextTower.transform.position;
+					explosion.SetActive (true);
+					Destroy (nextTower);
+				}
 			}
 		}
 	}

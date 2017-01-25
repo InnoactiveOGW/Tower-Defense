@@ -3,10 +3,11 @@ using System.Collections;
 
 public class Zombie : Enemy {
 
-	int startingHealth = 5;
+	int startingHealth = 30;
 	int zombieSpeed = 1;
-	int zombieDamage = 10;
-	int zombieValue = 1;
+	int zombieDamage = 2;
+	int zombieValue = 2;
+
 
 
 	void Start () {
@@ -32,9 +33,19 @@ public class Zombie : Enemy {
 		if(path.status == NavMeshPathStatus.PathPartial){
 			GameObject nextTower = getNextTower ();
 			if (nextTower != null) {
-				GroundTowerPlacement gtp = GameObject.Find ("_Skripts_").transform.GetComponent<GroundTowerPlacement> ();
-				gtp.updateUsedSpaceAt (nextTower.transform, 0);
-				Destroy (nextTower);
+				LaserTowerPlacement ltp = null;
+				if (GameObject.Find ("Controller (left)") == null) {
+					ltp = GameObject.Find ("Controller (right)").transform.GetComponent<LaserTowerPlacement> ();
+				} else{
+					ltp = GameObject.Find ("Controller (left)").transform.GetComponent<LaserTowerPlacement> ();
+				}
+				if (ltp != null) {
+					ltp.updateUsedSpaceAt (nextTower.transform, 0);
+					GameObject explosion = Instantiate (Resources.Load ("TowerExplosion")) as GameObject;
+					explosion.transform.position = nextTower.transform.position;
+					explosion.SetActive (true);
+					Destroy (nextTower);
+				}
 			}
 		}
 	}

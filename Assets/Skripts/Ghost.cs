@@ -3,10 +3,10 @@ using System.Collections;
 
 public class Ghost : Enemy {
 
-	int startingHealth = 100;
-	int ghostSpeed = 1; //7
-	int ghostDamage = 3;
-	int ghostValue = 1;
+	int startingHealth = 70;
+	int ghostSpeed = 2;
+	int ghostDamage = 8;
+	int ghostValue = 8;
 
 
 	void Start () {
@@ -32,9 +32,19 @@ public class Ghost : Enemy {
 		if(path.status == NavMeshPathStatus.PathPartial){
 			GameObject nextTower = getNextTower ();
 			if (nextTower != null) {
-				GroundTowerPlacement gtp = GameObject.Find ("_Skripts_").transform.GetComponent<GroundTowerPlacement> ();
-				gtp.updateUsedSpaceAt (nextTower.transform, 0);
-				Destroy (nextTower);
+				LaserTowerPlacement ltp = null;
+				if (GameObject.Find ("Controller (left)") == null) {
+					ltp = GameObject.Find ("Controller (right)").transform.GetComponent<LaserTowerPlacement> ();
+				} else{
+					ltp = GameObject.Find ("Controller (left)").transform.GetComponent<LaserTowerPlacement> ();
+				}
+				if (ltp != null) {
+					ltp.updateUsedSpaceAt (nextTower.transform, 0);
+					GameObject explosion = Instantiate (Resources.Load ("TowerExplosion")) as GameObject;
+					explosion.transform.position = nextTower.transform.position;
+					explosion.SetActive (true);
+					Destroy (nextTower);
+				}
 			}
 		}
 	}

@@ -10,7 +10,6 @@ public class Timer : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		counterText = GetComponent<TextMesh> () as TextMesh;
-
 	}
 
 	// Update is called once per frame
@@ -23,4 +22,5 @@ public class Timer : MonoBehaviour {
 	public string getTimeScore(){
 		return counterText.text;
 	}
+		
 }
